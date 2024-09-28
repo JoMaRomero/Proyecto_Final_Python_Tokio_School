@@ -1,0 +1,52 @@
+<!--Usamos extends para hacer que herede de base.html-->
+{% extends "base.html" %}
+
+{% block content %}    
+    <div class="container my-5">
+        <!-- Primera Card -->
+        <div class="card my-5">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="{{ url_for('static', filename='img/catalogo2.jpg') }}" class="img-fluid rounded-start" alt="Catalogo de Peliculas y Series">
+                </div>
+                <div class="col-md-8 d-flex align-items-center">
+                    <div class="card-body text-center">
+                        <h1 class="card-title texto-inicio2">PARA TODOS LOS PÚBLICOS</h1>
+                        <p class="card-text text-muted">Nuestro catálogo tiene películas y series disponibles para todos los públicos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Segunda card -->
+        <div class="card my-5">
+            <div class="row g-0">
+                <div class="col-md-8 d-flex align-items-center">
+                    <div class="card-body text-center">
+                        <h2 class="card-title">LAS MEJORES PELÍCULAS Y SERIES</h2>
+                        <h1 class="card-title texto-inicio1">DE EL MERCADO</h1>
+                        <p class="card-text text-muted">Descubre las mejores películas y series disponibles en el mercado, disponibles a la carta</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <img src="{{ url_for('static', filename='img/catalogo1.jpg') }}" class="img-fluid rounded-start" alt="Catalogo de Peliculas y Series">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tercera Card -->
+        <div class="card my-5">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="{{ url_for('static', filename='img/catalogo3.jpg') }}" class="img-fluid rounded-start" alt="Catalogo de Peliculas y Series">
+                </div>
+                <div class="col-md-8 d-flex align-items-center">
+                    <div class="card-body text-center">
+                        <h1 class="card-title texto-inicio2">DISPONIBLE AL MEJOR PRECIO</h1>
+                        <p class="card-text text-muted">Realiza nuestra prueba de 14 días y selecciona la tarifa que más te convenga</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,340 @@
+<!--Usamos extends para hacer que herede de base.html-->
+{% extends "base.html" %}
+
+{% block title %}ViewTube - ADMIN{% endblock %}
+
+{% block content %}    
+    <div class="container my-5">
+        <h2 class="text-center">Registrar Usuario</h2>
+        <form action="{{ url_for('add_usuario') }}" method="post">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-6">
+                    <div class="row mb-3 justify-content-center">
+                        <div class="col-md-3 d-flex align-items-center mb-2">
+                            <label for="adminSelect" class="form-label me-2">Admin: </label>
+                            <select id="adminSelect" class="form-select" name="admin" required>
+                                <option value="0" selected>No</option>
+                                <option value="1">Sí</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <input class="form-control" type="text" name="username" placeholder="Nombre de usuario:" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input class="form-control" type="password" name="password" placeholder="Contraseña:" minlength="8" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <input class="form-control" type="email" name="email" placeholder="Email:" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input class="form-control" type="text" name="fullname" placeholder="Nombre Completo:" required>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary w-50 d-block mx-auto mt-3" type="submit">Registrar Usuario</button>
+                </div>
+            </div>
+        </form>
+
+        <hr class="my-5">
+
+        <h2 class="text-center mt-5">Eliminar/Editar Usuario</h2>
+        <!-- Formulario para seleccionar un usuario -->
+        <form action="{{ url_for('select_usuario') }}" method="post">
+            <div class="row mb-3 justify-content-center">
+                <div class="col-md-4">
+                    <select class="form-select" name="id_usuario" required>
+                        <option value="" disabled selected>Seleccione un usuario</option>
+                        {% for usuario in usuarios %}
+                            <option value="{{ usuario.id }}">{{ usuario.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-3 justify-content-center">
+                <div class="col-md-6">
+                    <button class="btn btn-primary w-50 d-block mx-auto my-3" type="submit">
+                        Seleccionar Usuario
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Mostramos los datos del usuario seleccionado para editarlo -->
+        {% if selected_usuario %}
+            <h3 class="text-center mt-5 mb-3">
+                Usuario: {{ selected_usuario.username }}
+            </h3>
+            <form action="{{ url_for('edit_usuario', id=selected_usuario.id) }}" method="post">
+                <div class="row mb-3 justify-content-center">
+                    <div class="col-md-3">
+                        <label for="usuario" class="lavel-text">Nombre de Usuario *</label>
+                        <input id="usuario" class="form-control" type="text" name="username" value="{{ selected_usuario.username }}" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="pass" class="lavel-text">Contraseña *</label>
+                        <input id="pass" class="form-control" type="password" name="password" minlength="8" placeholder="Nueva Contraseña (opcional)">
+                    </div>
+                </div>
+                <div class="row mb-3 justify-content-center">
+                    <div class="col-md-3">
+                        <label for="email" class="lavel-text">Correo Electrónico *</label>
+                        <input id="email" class="form-control" type="email" name="email" value="{{ selected_usuario.email }}" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="fullname" class="lavel-text">Nombre Completo *</label>
+                        <input id="fullname" class="form-control" type="text" name="fullname" value="{{ selected_usuario.fullname }}" required>
+                    </div>
+                </div>
+                <div class="row mb-3 justify-content-center">
+                    <div class="col-md-6">
+                        <button class="btn btn-success w-50 d-block mx-auto mt-3" type="submit">
+                            Editar Usuario
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Formulario para eliminar al usuario seleccionado -->
+            <form action="{{ url_for('del_usuario') }}" method="post" style="display:inline;">
+                <input type="hidden" name="id_usuario" value="{{ selected_usuario.id }}">
+                <div class="row mb-3 justify-content-center">
+                    <div class="col-md-6">
+                        <button class="btn btn-danger w-50 d-block mx-auto " type="submit">
+                            Eliminar Usuario
+                        </button>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+
+        <hr class="my-5">
+
+        <h2 class="text-center mt-5">Agregar Película o Serie</h2>
+        <form action="{{ url_for('add_cinema') }}" method="post" enctype="multipart/form-data">
+            <div class="container">
+                <div class="row">
+                    <!-- Columna 1 -->
+                    <div class="col-md-6 mt-2">
+                        <div class="mb-3">
+                            <select id="tipo" class="form-select" name="peli_serie" required>
+                                <option value="" disabled selected>Selecciona Pelicula o Serie</option>
+                                <option value="0">Película</option>
+                                <option value="1">Serie</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <input class="form-control" type="text" name="title" placeholder="Título:" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <input class="form-control" type="text" name="description" placeholder="Descripción:" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <input class="form-control" type="date" name="date" placeholder="Fecha:" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <select class="form-select" name="genre" required>
+                                <option value="" disabled selected>Seleccione un género</option>
+                                <option value="Ciencia Ficción">Ciencia Ficción</option>
+                                <option value="Acción">Acción</option>
+                                <option value="Fantasía">Fantasía</option>
+                                <option value="Thriller">Thriller</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <input class="form-control" type="url" name="play" placeholder="Enlace reproducción:" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="poster" class="form-label">Poster:</label>
+                            <input type="file" id="poster" name="poster" accept=".png, .jpg, .jpeg" required>
+                        </div>
+
+                    </div>
+                    
+                    <!-- Columna 2 -->
+                    <div class="col-md-6 mt-2">
+                        <div id="duration" class="mb-3">
+                            <input class="form-control" type="number" name="duration" placeholder="Duración (minutos):">
+                        </div>
+
+                        <div id="numSeasons" class="mb-3">
+                            <input class="form-control" type="number" name="num_seasons" placeholder="Número de temporadas:">
+                        </div>
+
+                        <div id="numEpisodes" class="mb-3">
+                            <input class="form-control" type="number" name="num_episodes" placeholder="Número de episodios:">
+                        </div>
+
+                        <div id="episodeDuration" class="mb-3">
+                            <input class="form-control" type="number" name="episode_duration" placeholder="Duración de episodio (minutos):">
+                        </div>
+                        
+                        <button class="btn btn-primary" type="submit">Registrar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <hr class="my-5">
+
+        <h2 class="text-center mt-5">Eliminar/Editar Película o Serie</h2>
+
+        <!-- Formulario para seleccionar un cine -->
+        <form action="{{ url_for('select_cine') }}" method="post">
+            <div class="row mb-3 justify-content-center">
+                <div class="col-md-4">
+                    <select class="form-select" name="id_cine" required>
+                        <option value="" disabled selected>Seleccione una película o serie</option>
+                        {% for cine in cinema %}
+                            <option value="{{ cine.id }}">{{ cine.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-3 justify-content-center">
+                <div class="col-md-6">
+                    <button class="btn btn-primary w-50 d-block mx-auto my-3" type="submit">
+                        Seleccionar Peli/Serie
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Mostramos los datos del cine seleccionado para editarlo -->
+        {% if selected_cine %}
+            <h3 class="text-center mt-5 mb-3">
+                {{ selected_cine.title }}
+            </h3>
+            <form action="{{ url_for('edit_cine', id=selected_cine.id) }}" method="post" enctype="multipart/form-data">
+                <div class="container">
+                    <div class="row">
+                        <!-- Columna 1 -->
+                        <div class="col-md-6 mt-2">
+                            
+                            <div class="mb-3">
+                                <label for="title" class="lavel-text">Título *</label>
+                                <input class="form-control" id="title" type="text" name="title" value="{{ selected_cine.title }}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="lavel-text">Descripción *</label>
+                                <input class="form-control" id="description" type="text" name="description" value="{{ selected_cine.description }}" required>
+                            </div>
+    
+                            <div class="mb-3">
+                                <label for="fecha" class="lavel-text">Fecha de Lanzamiento *</label>
+                                <input class="form-control" id="fecha" type="date" name="date" value="{{ selected_cine.date }}" required>
+                            </div>
+    
+                            <div class="mb-3">
+                                <label for="genre" class="lavel-text">Género *</label>
+                                <select id="genre" class="form-select" name="genre" required>
+                                    <option value="Ciencia Ficción" {% if selected_cine.genre == "Ciencia Ficción" %}selected{% endif %}>Ciencia Ficción</option>
+                                    <option value="Acción" {% if selected_cine.genre == "Acción" %}selected{% endif %}>Acción</option>
+                                    <option value="Fantasía" {% if selected_cine.genre == "Fantasía" %}selected{% endif %}>Fantasía</option>
+                                    <option value="Thriller" {% if selected_cine.genre == "Thriller" %}selected{% endif %}>Thriller</option>
+                                </select>
+                            </div>
+    
+                            <div class="mb-3">
+                                <label for="play" class="lavel-text">URL Reproducción *</label>
+                                <input class="form-control" id="play" type="url" name="play" value="{{ selected_cine.play }}" required>
+                            </div>
+    
+                            <div class="mb-3">
+                                <label for="poster" class="lavel-text">Imágen Portada</label>
+                                <br>
+                                <input type="file" name="poster" accept=".png, .jpg, .jpeg" value="{{ selected_cine.poster }}">
+                            </div>
+
+                        </div> 
+                        
+                        <!-- Columna 2 -->
+                        <div class="col-md-6 mt-2">
+                            {% if selected_cine.peli_serie == 0 %}
+                                <div class="mb-3">
+                                    <label for="duration" class="lavel-text">Duración *</label>
+                                    <input id="duration" class="form-control" type="number" name="duration" value="{{ selected_cine.duration }}">
+                                </div>
+                            {% elif selected_cine.peli_serie == 1 %}
+                                <div class="mb-3">
+                                    <label for="num_seasons" class="lavel-text">Número de Temporadas *</label>
+                                    <input id="num_seasons" class="form-control" type="number" name="num_seasons" value="{{ selected_cine.num_seasons }}">
+                                </div>
+        
+                                <div class="mb-3">
+                                    <label for="num_episodes" class="lavel-text">Número de Episodios por Temporada *</label>
+                                    <input id="num_episodes" class="form-control" type="number" name="num_episodes" value="{{ selected_cine.num_episodes }}">
+                                </div>
+        
+                                <div class="mb-3">
+                                    <label for="episode_duration" class="lavel-text">Duración de los Episodios *</label>
+                                    <input id="episode_duration" class="form-control" type="number" name="episode_duration" value="{{ selected_cine.episode_duration }}">
+                                </div>
+                            {% endif %}
+                            <button class="btn btn-primary" type="submit">Editar Cine</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Formulario para eliminar el cine seleccionado -->
+            <form action="{{ url_for('del_cine') }}" method="post" style="display:inline;">
+                <input type="hidden" name="id_cine" value="{{ selected_cine.id }}">
+                <div class="row mb-3 justify-content-center">
+                    <div class="col-md-6">
+                        <button class="btn btn-danger w-50 d-block mx-auto" type="submit">
+                            Eliminar Cine
+                        </button>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+
+        <hr class="my-5">
+
+        <h2 class="text-center mb-4">Gráficas de Favoritos y Vistas</h2>
+
+        <div class="d-flex justify-content-center mb-4">
+            <form action="/admin" method="get" class="me-2">
+                <input type="hidden" name="show_vistas" value="{{ show_vistas }}">
+                <button class="btn {% if show_fav %}btn-outline-secondary{% elif not show_fav %}btn-primary{% endif %}" type="submit" name="show_fav" value="{{ 'true' if not show_fav else 'false' }}">
+                    {{ 'Ocultar' if show_fav else 'Mostrar' }} Gráfica de Favoritos
+                </button>
+            </form>
+
+            <form action="/admin" method="get">
+                <input type="hidden" name="show_fav" value="{{ show_fav }}">
+                <button class="btn {% if show_vistas %}btn-outline-secondary{% elif not show_vistas %}btn-primary{% endif %}" type="submit" name="show_vistas" value="{{ 'true' if not show_vistas else 'false' }}">
+                    {{ 'Ocultar' if show_vistas else 'Mostrar' }} Gráfica de Vistas
+                </button>
+            </form>
+
+        </div>
+        
+
+        {% if show_fav %}
+            <div class="text-center mb-4">
+                <h2>Películas en Favoritos</h2>
+                <img src="{{ url_for('graph_fav') }}" alt="Gráfica de Favoritos" class="img-fluid">
+            </div>
+        {% endif %}
+
+        {% if show_vistas %}
+            <div class="text-center mb-4">
+                <h2>Películas en Vistas</h2>
+                <img src="{{ url_for('graph_vistas') }}" alt="Gráfica de Vistas" class="img-fluid">
+            </div>            
+        {% endif %}
+
+    </div>
+{% endblock %}

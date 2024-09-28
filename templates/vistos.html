@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}ViewTube - Vistos{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1>VISTOS</h1>
+        </div>
+        <div class="row">
+            {% for cine in cinema %}
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="row no-gutters">
+                            <!--Zona portada y título-->
+                            <div class="col-md-4">
+                                    <div class="contenedor-cine">
+                                        <a href="{{ cine.play }}">
+                                            <!-- El ~ se usa para concatenar en Jinja2 -->
+                                            <img src="{{ url_for('static', filename='img/' ~ cine.poster) }}" alt="Portada de {{ cine.title }}" class="card-img-top">
+                                            <div class="hover-img">
+                                                <img src="{{ url_for('static', filename='img/play.png') }}" class="play-icon" alt="Icono de Reproducción">
+                                            </div>
+                                        </a>
+                                    </div>
+                            </div>
+                            <!--Zona detalles-->
+                            <div class="col-md-8 d-flex align-items-center">
+                                <div class="card-body">
+                                    <h1 class="card-title text-center mb-5">{{ cine.title }}</h1>
+                                    <p class="card-text">{{ cine.description }}</p>
+                                    <div class="mb-4 text-center">
+                                        <p class="card-text"><small class="text-muted"><b>Genero: </b>{{ cine.genre }} - <b>Fecha: </b>{{ cine.date.strftime("%d-%m-%Y") }}</small></p>
+                                        {% if cine.peli_serie %}
+                                            <p class="card-text"><small class="text-muted"><b>Número de Temporadas: </b>{{ cine.num_seasons }}</small></p>
+                                            <p class="card-text"><small class="text-muted"><b>Número de Episodios: </b>{{ cine.num_episodes }} - <b>Duración Episodio: </b>{{ cine.episode_duration }} min.</small></p>
+                                        {% else %}
+                                            <p class="card-text"><small class="text-muted"><b>Duración: </b>{{ cine.duration }} min.</small></p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <form action="{{ url_for('favoritos', id_usuario=current_user.id, id_cine=cine.id) }}" method="post">
+                                            <button class="btn {% if cine.id in id_fav %}btn-secondary{% else %}btn-primary{% endif %} me-2" type="submit">Favorito</button>
+                                        </form>
+                                        <!--Boton de añadir cinecula a Vistos-->
+                                        <form action="{{ url_for('vistos', id_usuario=current_user.id, id_cine=cine.id) }}" method="post">
+                                            <button class="btn {% if cine.id in id_vista %}btn-secondary{% else %}btn-primary{% endif %}" type="submit">Visto</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center mb-4">No se encontraron cines disponibles.</div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-2">
+            <a href="{{ url_for('home') }}" class="btn btn-outline-primary">Inicio</a>
+        </div>
+    </div>
+{% endblock %}

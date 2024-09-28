@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}ViewTube - Registro{% endblock %}
+
+{% block search %}{% endblock %}
+
+{% block content %}
+    <div class="container text-center">
+        <h1>Registrar Usuario</h1>
+        <form action="{{ url_for('registro') }}" method="post" class="d-flex flex-column align-items-center">
+            <div class="w-25">
+                <input class="form-control mt-2" type="text" name="username" placeholder="Nombre de usuario" required>
+                <input class="form-control mt-1" type="password" name="password" placeholder="Contraseña" minlength="8" required>
+                <input class="form-control mt-1" type="email" name="email" placeholder="Email" required>
+                <input class="form-control mt-1 mb-4" type="text" name="fullname" placeholder="Nombre Completo" required>
+            </div>
+            <button class="btn btn-primary" type="submit">Registrar Usuario</button>
+        </form>
+        <a class="btn btn-outline-secondary mt-2" href="{{ url_for('login') }}">Volver a Iniciar Sesión</a>
+    </div>
+{% endblock %}

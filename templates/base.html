@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<!--ESTO ES UNA PLANTILLA PARA LOS OTROS ARCHIVOS HTML, LOS DEMÁS ARCHIVOS DEBEN HEREDAR DE ESTE.-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}ViewTube{% endblock %}</title>
+
+    <!-- Icon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/viewtubeicon.ico') }}">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Main CSS -->
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+</head>
+<body data-bs-theme="dark">
+
+    <nav class="navbar bg-body-tertiary sticky-top bg-navbar">
+        <div class="container-fluid">
+            <div class="row w-100">
+                <!-- Logo y Menú -->
+                <div class="col-8 d-flex align-items-center">
+                    <a class="navbar-brand" href="{{ url_for('home') }}">
+                        <img src="{{ url_for('static', filename='img/viewtubeicon.ico') }}" alt="Logo" width="80" height="80" class="d-inline-block align-text-center">
+                        <span class="texto_navbar">ViewTube</span>
+                    </a>
+                    <ul class="navbar-nav d-flex flex-row mx-auto">
+                        <li class="nav-item mx-2">
+                            <a class="nav-link {% if request.endpoint == 'home' %}active{% endif %} texto_navbar" href="{{ url_for('home') }}">Inicio</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link {% if not current_user.is_authenticated %}disabled{% endif %} {% if request.endpoint == 'peliculas' %}active{% endif %} texto_navbar" href="{{ url_for('peliculas') }}">Peliculas</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link {% if not current_user.is_authenticated %}disabled{% endif %} {% if request.endpoint == 'series' %}active{% endif %} texto_navbar" href="{{ url_for('series') }}">Series</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link {% if not current_user.is_authenticated %}disabled{% endif %} {% if request.endpoint == 'favs' %}active{% endif %} texto_navbar" href="{{ url_for('favs') }}">Favoritos</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link {% if not current_user.is_authenticated %}disabled{% endif %} {% if request.endpoint == 'vista' %}active{% endif %} texto_navbar" href="{{ url_for('vista') }}">Vistos</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link {% if not current_user.is_authenticated %}disabled{% endif %} {% if request.endpoint == 'grafica' %}active{% endif %} texto_navbar" href="{{ url_for('grafica') }}">Gráficas</a>
+                        </li>
+                        {% if current_user.admin %}
+                            <li class="nav-item mx-2">
+                                <a class="nav-link {% if not current_user.is_authenticated %}disabled{% endif %} {% if request.endpoint == 'admin' %}active{% endif %} texto_navbar" href="{{ url_for('admin') }}">ADMIN</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <!-- Buscador y Login -->
+                <div class="col-4 d-flex flex-column align-items-end">
+                    {% block search %}
+                        <form class="d-flex" role="search" action="{{ url_for('buscar') }}", method="post"> 
+                            
+                            <input class="form-control me-2" type="search" name="contenido_titulo" placeholder="Buscar por título...">
+            
+                            <select class="form-select me-2 w-50" id="floatingSelectGrid" name="contenido_genero">
+                                <option value="">Todos los géneros</option>
+                                <option>Ciencia Ficción</option>
+                                <option>Acción</option>
+                                <option>Fantasía</option>
+                                <option>Thriller</option>
+                            </select>
+            
+                            <button class="btn btn-sm btn-secondary" type="submit">Buscar</button>
+            
+                        </form>
+                    {% endblock %}
+                    <div class="w-100 d-flex justify-content-end align-items-center mt-4" style="font-size: small; padding-top: 0px;">
+                        {% if current_user.is_authenticated %}
+                            <span>Usuario: {{ current_user.username }}</span>
+                            <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-secondary ms-2">Cerrar Sesión</a>
+                        {% else %}
+                            <form class="d-flex" action="{{ url_for('login') }}" method="post">
+                                <input class="form-control me-2" type="text" name="username" placeholder="Nombre de usuario" required>
+                                <input class="form-control me-2" type="password" name="password" placeholder="Contraseña" required>
+                                <button class="btn btn-secondary w-75 me-2" type="submit">Iniciar Sesión</button>
+                            </form>
+                            <div class="d-flex">
+                                <a class="btn btn-primary" href="{{ url_for('registro') }}">Registrarse</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+      </nav>
+
+    <!--------------------------------------------------------------->
+
+    <!--CON ESTO TOMAMOS LOS MENSAJES FLASH Y LOS MOSTRAMOS. LA CATEGORY ES PARA MANTENER SI ES SUCCESS O ERROR Y MESSAGE QUE ES EL CONTENIDO DEL MENSAJE-->
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        <!--COMPROBAMOS SI HAY MENSAJES FLASH Y SE EJECUTA SI LOS HAY-->
+        {% if mensajes %}
+            <div class="flashes">
+                <!--SE RECOPILAN LAS CATEGORIAS PARA PODER ASIGNAR DIFERENTE ESTILO DEPENDIENDO DE LA CATEGORÍA-->
+                {% for category, mensaje in mensajes %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert"> 
+                        {{ mensaje }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <div class="my-4 mx-4">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

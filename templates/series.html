@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}ViewTube - Series{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1>SERIES</h1>
+        </div>
+        <div class="row">
+            {% for serie in series %}
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="row no-gutters">
+                            <!--Zona portada y título-->
+                            <div class="col-md-4">
+                                    <div class="contenedor-cine">
+                                        <a href="{{ serie.play }}">
+                                            <!-- El ~ se usa para concatenar en Jinja2 -->
+                                            <img src="{{ url_for('static', filename='img/' ~ serie.poster) }}" alt="Portada de {{ serie.title }}" class="card-img-top">
+                                            <div class="hover-img">
+                                                <img src="{{ url_for('static', filename='img/play.png') }}" class="play-icon" alt="Icono de Reproducción">
+                                            </div>
+                                        </a>
+                                    </div>
+                            </div>
+                            <!--Zona detalles-->
+                            <div class="col-md-8 d-flex align-items-center">
+                                <div class="card-body">
+                                    <h1 class="card-title text-center mb-5">{{ serie.title }}</h1>
+                                    <p class="card-text">{{ serie.description }}</p>
+                                    <div class="mb-4 text-center">
+                                        <p class="card-text"><small class="text-muted"><b>Genero: </b>{{ serie.genre }} - <b>Fecha: </b>{{ serie.date.strftime("%d-%m-%Y") }}</small></p>
+                                        <p class="card-text"><small class="text-muted"><b>Número de Temporadas: </b>{{ serie.num_seasons }}</small></p>
+                                        <p class="card-text"><small class="text-muted"><b>Número de Episodios: </b>{{ serie.num_episodes }} - <b>Duración Episodio: </b>{{ serie.episode_duration }} min.</small></p>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <form action="{{ url_for('favoritos', id_usuario=current_user.id, id_cine=serie.id) }}" method="post">
+                                            <button class="btn {% if serie.id in id_fav %}btn-secondary{% else %}btn-primary{% endif %} me-2" type="submit">Favorito</button>
+                                        </form>
+                                        <!--Boton de añadir seriecula a Vistos-->
+                                        <form action="{{ url_for('vistos', id_usuario=current_user.id, id_cine=serie.id) }}" method="post">
+                                            <button class="btn {% if serie.id in id_vista %}btn-secondary{% else %}btn-primary{% endif %}" type="submit">Visto</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center mb-4">No se encontraron series disponibles.</div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-2">
+            <a href="{{ url_for('home') }}" class="btn btn-outline-primary">Inicio</a>
+        </div>
+    </div>
+{% endblock %}
