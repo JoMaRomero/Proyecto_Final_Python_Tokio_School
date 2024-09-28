@@ -1,4 +1,4 @@
-# Proyecto Final de Python de Tokio School
+# Final Project from Tokio School in Python
 
 Final project in Python made with Flash and SQLAlchemy. 
 
