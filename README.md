@@ -4,6 +4,8 @@ Final project in Python made with Flash and SQLAlchemy.
 
 Template B was used for this project, which consist of simulating a web page like Netflix.
 
+The project is mostly for Python so i didnt use much effort on HTML, CSS or JS. Used Bootstrap to help me with the work, don't expect something really fancy for that.
+
 ## Try the project
 
 To run it, open it with a IDE like VSC, create a venv with "python -m venv venv", then opening the venv writing ".\venv\Scripts\activate" in the terminal.
